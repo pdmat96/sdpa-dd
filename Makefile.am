@@ -24,7 +24,14 @@ mpack/Rger.cpp mpack/Rpotrf.cpp mpack/Mxerbla.cpp mpack/Rpotf2.cpp \
 mpack/Mlsame.cpp mpack/Rscal.cpp mpack/Rcopy.cpp mpack/Rgemv.cpp \
 mpack/Rtrmv.cpp mpack/Rsteqr.cpp mpack/Rlaset.cpp mpack/Rlaev2.cpp \
 mpack/Rlasr.cpp mpack/Rlartg.cpp mpack/Rswap.cpp mpack/Rsyev.cpp\
-mpack/Rlansy.cpp mpack/Mutils.cpp
+mpack/Rlansy.cpp mpack/Mutils.cpp\
+mpack/Raxpy_omp.cpp\
+mpack/Rcopy_omp.cpp\
+mpack/Rdot_omp.cpp\
+mpack/Rgemm_NN_omp.cpp\
+mpack/Rgemm_NT_omp.cpp\
+mpack/Rgemm_TN_omp.cpp\
+mpack/Rgemm_TT_omp.cpp
 endif
 
 if ENABLE_SHARED

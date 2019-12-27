@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2011
+ * Copyright (c) 2010
  *	Nakata, Maho
  * 	All rights reserved.
  *
@@ -73,21 +73,33 @@ Rcopy copies a vector, x, to a vector, y.
 */
 
 #include <mblas_dd.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
-void Rcopy_ref(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy);
-void Rcopy_omp(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy);
-
-#define SINGLEOROMP 1000
-
-void Rcopy(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
+void Rcopy_omp(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
 {
     mpackint ix = 0;
     mpackint iy = 0;
     mpackint i;
-    if (n <= 0) return;
 
-    if (0) {
-        Rcopy_ref(n, dx, incx, dy, incy);
-    } else { Rcopy_omp(n, dx, incx, dy, incy); }
+    if (incx < 0) ix = (-n + 1) * incx;
+    if (incy < 0) iy = (-n + 1) * incy;
+
+    if ( incx == 1 && incy == 1 ) {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+      for (i = 0; i < n; i++) {
+	dy[i] = dx[i];
+      }
+      return;
+    }
+
+    for (i = 0; i < n; i++) {
+	dy[iy] = dx[ix];
+	ix = ix + incx;
+	iy = iy + incy;
+    }
     return;
 }

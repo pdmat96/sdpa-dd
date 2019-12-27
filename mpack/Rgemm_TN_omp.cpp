@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2010, 2012
+ * Copyright (c) 2008-2012
  *	Nakata, Maho
  * 	All rights reserved.
  *
- * $Id: Raxpy.cpp,v 1.11 2010/08/07 05:50:09 nakatamaho Exp $
+ * $Id: Rgemm_TN.cpp,v 1.1 2010/12/28 06:13:53 nakatamaho Exp $
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -27,23 +27,37 @@
  * SUCH DAMAGE.
  *
  */
-
 #include <mblas_dd.h>
 
-void Raxpy_omp(mpackint n, dd_real da, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy);
-void Raxpy_ref(mpackint n, dd_real da, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy);
-
-#define SINGLEOROMP 1000
-
-void Raxpy(mpackint n, dd_real da, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
+void Rgemm_TN_omp(mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real *A, mpackint lda, dd_real *B, mpackint ldb, dd_real beta,
+	      dd_real *C, mpackint ldc)
 {
-    dd_real Zero = 0.0;
-    mpackint i;
-
-    if (n <= 0)	return;
-    if (da == Zero) return;
-
-    if (0) { Raxpy_ref(n, da, dx, incx, dy, incy); }
-    else { Raxpy_omp(n, da, dx, incx, dy, incy); }
+//Form  C := alpha*A'*B + beta*C.
+    mpackint i, j, l;
+    dd_real temp;
+    for (j = 0; j < n; j++) {
+	if (beta == 0.0) {
+	    for (i = 0; i < m; i++) {
+		C[i + j * ldc] = 0.0;
+	    }
+	} else if (beta != 1.0) {
+	    for (i = 0; i < m; i++) {
+		C[i + j * ldc] = beta * C[i + j * ldc];
+	    }
+	}
+    }
+//main loop
+#ifdef _OPENMP
+#pragma omp parallel for private(i, j, l, temp)
+#endif
+    for (j = 0; j < n; j++) {
+	for (i = 0; i < m; i++) {
+	    temp = 0.0;
+	    for (l = 0; l < k; l++) {
+		temp += A[l + i * lda] * B[l + j * ldb];
+	    }
+	    C[i + j * ldc] += alpha * temp;
+	}
+    }
     return;
 }

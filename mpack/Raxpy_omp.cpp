@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2010, 2011
+ * Copyright (c) 2010-2012
  *	Nakata, Maho
  * 	All rights reserved.
  *
- * $Id: Rcopy.cpp,v 1.5 2010/08/07 05:50:09 nakatamaho Exp $
+ * $Id: Raxpy.cpp,v 1.11 2010/08/07 05:50:09 nakatamaho Exp $
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@
 /*
 Copyright (c) 1992-2007 The University of Tennessee.  All rights reserved.
  *
- * $Id: Rcopy.cpp,v 1.5 2010/08/07 05:50:09 nakatamaho Exp $
+ * $Id: Raxpy.cpp,v 1.11 2010/08/07 05:50:09 nakatamaho Exp $
 
 $COPYRIGHT$
 
@@ -68,26 +68,42 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /*
-Based on http://www.netlib.org/blas/dcopy.f
-Rcopy copies a vector, x, to a vector, y.
+Based on http://www.netlib.org/blas/daxpy.f
 */
 
 #include <mblas_dd.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
-void Rcopy_ref(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy);
-void Rcopy_omp(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy);
-
-#define SINGLEOROMP 1000
-
-void Rcopy(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
+void Raxpy_omp(mpackint n, dd_real da, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
 {
+    dd_real Zero = 0.0;
+    mpackint i;
+
+    if (n <= 0)	return;
+    if (da == Zero) return;
+
     mpackint ix = 0;
     mpackint iy = 0;
-    mpackint i;
-    if (n <= 0) return;
 
-    if (0) {
-        Rcopy_ref(n, dx, incx, dy, incy);
-    } else { Rcopy_omp(n, dx, incx, dy, incy); }
-    return;
+    if (incx < 0) ix = (-n + 1) * incx;
+    if (incy < 0) iy = (-n + 1) * incy;
+
+    if (incx == 1 && incy == 1 ) {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+      for (i = 0; i < n; i++) {
+	dy[i] += da * dx[i];
+      }
+      return; 
+    }
+
+    for (i = 0; i < n; i++) {
+      dy[iy] += da * dx[ix];
+      ix = ix + incx;
+      iy = iy + incy;
+    }
+  return;
 }
