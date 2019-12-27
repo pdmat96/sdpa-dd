@@ -76,7 +76,7 @@ Based on http://www.netlib.org/blas/daxpy.f
 #include <omp.h>
 #endif
 
-void Raxpy_omp(mpackint n, dd_real da, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
+void Raxpy(mpackint n, dd_real da, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
 {
     dd_real Zero = 0.0;
     mpackint i;

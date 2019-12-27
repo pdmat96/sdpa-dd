@@ -77,7 +77,7 @@ Rcopy copies a vector, x, to a vector, y.
 #include <omp.h>
 #endif
 
-void Rcopy_omp(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
+void Rcopy(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
 {
     mpackint ix = 0;
     mpackint iy = 0;

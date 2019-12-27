@@ -77,7 +77,7 @@ Rdot forms the dot product of two vectors.
 #include <omp.h>
 #endif
 
-dd_real Rdot_omp(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
+dd_real Rdot(mpackint n, dd_real * dx, mpackint incx, dd_real * dy, mpackint incy)
 {
     mpackint ix = 0;
     mpackint iy = 0;
