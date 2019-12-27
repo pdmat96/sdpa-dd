@@ -29,7 +29,7 @@
  */
 #include <mblas_dd.h>
 
-void Rgemm_NT_omp(mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real *A, mpackint lda, dd_real *B, mpackint ldb, dd_real beta,
+void Rgemm_NT(mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real *A, mpackint lda, dd_real *B, mpackint ldb, dd_real beta,
 	      dd_real *C, mpackint ldc)
 {
 //Form  C := alpha*A*B' + beta*C.

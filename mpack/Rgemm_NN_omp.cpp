@@ -33,7 +33,7 @@
 #include <omp.h>
 #endif
 
-void Rgemm_NN_omp(mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real *A, mpackint lda, dd_real *B, mpackint ldb, dd_real beta,
+void Rgemm_NN(mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real *A, mpackint lda, dd_real *B, mpackint ldb, dd_real beta,
 	      dd_real *C, mpackint ldc)
 {
     mpackint i, j, l;
